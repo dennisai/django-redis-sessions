@@ -19,7 +19,7 @@ class SessionStore(SessionBase):
 
     def load(self):
         try:
-            session_data = self.server.get(self.get_real_stored_key(self.session_key))
+            session_data = self.server.get(self.get_real_stored_key(self._session_key))
             return self.decode(force_unicode(session_data))
         except:
             self.create()
@@ -40,11 +40,11 @@ class SessionStore(SessionBase):
             return
 
     def save(self, must_create=False):
-        if must_create and self.exists(self.session_key):
+        if must_create and self.exists(self._session_key):
             raise CreateError
         data = self.encode(self._get_session(no_load=must_create))
-        self.server.set(self.get_real_stored_key(self.session_key), data)
-        self.server.expire(self.get_real_stored_key(self.session_key), self.get_expiry_age())
+        self.server.set(self.get_real_stored_key(self._session_key), data)
+        self.server.expire(self.get_real_stored_key(self._session_key), self.get_expiry_age())
 
     def delete(self, session_key=None):
         if session_key is None:
